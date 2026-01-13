@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 0.91
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.21169807, g: 0.5999999, b: 0.27469692, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 249b62a21aaa4fc45ac5211c8b0599a9, type: 2}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.389
   m_FlareStrength: 0.357
   m_FlareFadeSpeed: 3
@@ -6271,8 +6271,12 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.5
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedComponents:
+    - {fileID: 9019660526456232797, guid: ec1c155cceaf8ef44bd3d3b87c637061, type: 3}
+    - {fileID: 7935872043869623459, guid: ec1c155cceaf8ef44bd3d3b87c637061, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 2530306817698063658, guid: ec1c155cceaf8ef44bd3d3b87c637061, type: 3}
+    - {fileID: 7764149693824277099, guid: ec1c155cceaf8ef44bd3d3b87c637061, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec1c155cceaf8ef44bd3d3b87c637061, type: 3}
@@ -6621,51 +6625,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91e645b0a11331f40a6c1310fb3c98ad, type: 3}
---- !u!1 &152077976
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 152077978}
-  - component: {fileID: 152077977}
-  m_Layer: 0
-  m_Name: skyboxcontroller
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &152077977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 152077976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 792545cd673c00d41ba49e0508d3fb6c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotationSpeed: 1.5
---- !u!4 &152077978
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 152077976}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14.711337, y: 4.107655, z: -79.03117}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &161812660
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -114766,7 +114725,6 @@ SceneRoots:
   - {fileID: 1277383299}
   - {fileID: 1094508961}
   - {fileID: 1068395773}
-  - {fileID: 152077978}
   - {fileID: 596375835}
   - {fileID: 1719330808}
   - {fileID: 978703468}
