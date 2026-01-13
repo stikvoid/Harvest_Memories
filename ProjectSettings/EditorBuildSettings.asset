@@ -4,6 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/harvest-memories/MainMenu.unity
+    guid: 84d72ce092d067849b88d60f61f23e80
+  - enabled: 1
+    path: Assets/art/scenes/harvest-memories (2).unity
+    guid: 7d487e8317a138e489dafdb575f094a5
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
