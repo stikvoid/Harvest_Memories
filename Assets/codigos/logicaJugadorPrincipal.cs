@@ -69,7 +69,7 @@ public class logicaJugadorPrincipal : MonoBehaviour
         if (!isPicking)
         {
             LeerMovimiento();
-            ControlCamara();
+            // ControlCamara();
             ControlAcciones();
             ControlVela();
         }
@@ -181,27 +181,30 @@ public class logicaJugadorPrincipal : MonoBehaviour
     }
 
     // ───────── CÁMARA ─────────
-    void ControlCamara()
-    {
-        if (Mouse.current == null) return;
+    /*
+void ControlCamara()
+{
+    if (Mouse.current == null) return;
 
-        Vector2 mouseDelta = Mouse.current.delta.ReadValue();
+    Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
-        float mouseX = mouseDelta.x * rotationSpeed * Time.deltaTime;
-        float mouseY = mouseDelta.y * rotationSpeed * Time.deltaTime;
+    float mouseX = mouseDelta.x * rotationSpeed * Time.deltaTime;
+    float mouseY = mouseDelta.y * rotationSpeed * Time.deltaTime;
 
-        tr.Rotate(Vector3.up * mouseX);
+    tr.Rotate(Vector3.up * mouseX);
 
-        rotY -= mouseY;
-        rotY = Mathf.Clamp(rotY, minAngle, maxAngle);
-        cameraShoulder.localRotation = Quaternion.Euler(rotY, 0, 0);
+    rotY -= mouseY;
+    rotY = Mathf.Clamp(rotY, minAngle, maxAngle);
+    cameraShoulder.localRotation = Quaternion.Euler(rotY, 0, 0);
 
-        cam.position = Vector3.Lerp(cam.position, cameraHolder.position, cameraSmooth * Time.deltaTime);
-        cam.rotation = Quaternion.Lerp(cam.rotation, cameraHolder.rotation, cameraSmooth * Time.deltaTime);
-    }
+    cam.position = Vector3.Lerp(cam.position, cameraHolder.position, cameraSmooth * Time.deltaTime);
+    cam.rotation = Quaternion.Lerp(cam.rotation, cameraHolder.rotation, cameraSmooth * Time.deltaTime);
+}
+*/
 
-    // ───────── SUELO ─────────
-    void CheckGround()
+
+// ───────── SUELO ─────────
+void CheckGround()
     {
         Vector3 origen = transform.position + Vector3.up * 0.15f;
         OnGround = Physics.Raycast(origen, Vector3.down, groundCheckDistance);
