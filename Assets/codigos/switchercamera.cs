@@ -3,116 +3,89 @@ using UnityEngine;
 public class CameraSwitcher : MonoBehaviour
 {
     [Header("Cámaras")]
-    public GameObject thirdPersonCamera;
-    public GameObject firstPersonCamera;
+    public GameObject thirdPersonCamera;   // Cámara de tercera persona
+    public GameObject firstPersonCamera;   // Cámara de primera persona
 
     [Header("Pivotes y referencias")]
-    public Transform playerRoot;      // El transform del jugador (para yaw)
-    public Transform shoulderPivot;   // Eje vertical para tercera persona
-    public Transform cameraHolder;    // Posición/rotación objetivo de la cámara activa
+    public Transform playerRoot;           // Raíz del jugador (Gregorio)
+    public Transform shoulderPivot;        // Pivote vertical (pitch)
+    public Transform cameraHolder;         // Objeto que contiene la Main Camera
 
     [Header("Rotación")]
-    public float rotationSpeed = 280f;
+    public float rotationSpeed = 300f;
     public float minPitch = -70f;
     public float maxPitch = 70f;
 
     [Header("Suavizado")]
-    public float positionSmoothTime = 0.08f; // SmoothDamp (posición)
-    public float rotationLerp = 8f;          // Slerp (rotación)
-    private Vector3 posVelocity = Vector3.zero;
+    public float positionSmoothTime = 0.15f;
+    public float rotationLerp = 6f;
 
-    // Estado interno
-    private Transform cam;           // Transform de la cámara activa
-    private float yaw;               // Rotación horizontal acumulada (en grados)
-    private float pitch;             // Rotación vertical acumulada (en grados)
+    private float yaw;
+    private float pitch;
+    private Vector3 currentVelocity;
 
     void Start()
     {
-        // Validaciones mínimas
-        if (playerRoot == null) playerRoot = transform;
+        // Inicia en tercera persona
+        thirdPersonCamera.SetActive(true);
+        firstPersonCamera.SetActive(false);
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        // Activar tercera persona por defecto
-        SetThirdPerson(true);
     }
 
     void Update()
     {
-        // Alternar cámaras con C
+        // Alternar cámaras con tecla C
         if (Input.GetKeyDown(KeyCode.C))
         {
-            bool toThird = !thirdPersonCamera.activeSelf;
-            SetThirdPerson(toThird);
+            bool isThirdActive = thirdPersonCamera.activeSelf;
+            thirdPersonCamera.SetActive(!isThirdActive);
+            firstPersonCamera.SetActive(isThirdActive);
         }
 
-        HandleRotation();
-        HandleCameraFollow();
-    }
+        // Entrada del mouse
+        yaw += Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
+        pitch -= Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
+        pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
 
-    void SetThirdPerson(bool enableThird)
-    {
-        thirdPersonCamera.SetActive(enableThird);
-        firstPersonCamera.SetActive(!enableThird);
-
-        cam = enableThird ? thirdPersonCamera.transform : firstPersonCamera.transform;
-
-        // Recalcular yaw/pitch desde el estado actual para evitar saltos
-        yaw = playerRoot.eulerAngles.y;
-
-        if (enableThird && shoulderPivot != null)
+        // Rotación vertical (pitch)
+        if (shoulderPivot != null)
         {
-            // Tomar pitch desde el pivot
-            pitch = shoulderPivot.localEulerAngles.x;
-            // Normalizar a rango [-180, 180]
-            if (pitch > 180f) pitch -= 360f;
+            shoulderPivot.localRotation = Quaternion.Lerp(
+                shoulderPivot.localRotation,
+                Quaternion.Euler(pitch, 0, 0),
+                Time.deltaTime * rotationLerp
+            );
         }
-        else
+
+        // Rotación horizontal (yaw)
+        if (playerRoot != null)
         {
-            // En primera persona, tomar pitch desde la cámara
-            pitch = cam.localEulerAngles.x;
-            if (pitch > 180f) pitch -= 360f;
+            playerRoot.rotation = Quaternion.Lerp(
+                playerRoot.rotation,
+                Quaternion.Euler(0, yaw, 0),
+                Time.deltaTime * rotationLerp
+            );
         }
-    }
 
-    void HandleRotation()
-    {
-        // Solo rotar si el click izquierdo está presionado
-        if (!Input.GetMouseButton(0)) return;
-
-        float mouseX = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
-
-        // Acumular yaw/pitch
-        yaw += mouseX;
-        pitch = Mathf.Clamp(pitch - mouseY, minPitch, maxPitch);
-
-        // Aplicar yaw suavizado al jugador (Slerp hacia el objetivo)
-        Quaternion targetYaw = Quaternion.Euler(0f, yaw, 0f);
-        playerRoot.rotation = Quaternion.Slerp(playerRoot.rotation, targetYaw, rotationLerp * Time.deltaTime);
-
-        // Aplicar pitch según cámara activa
-        if (thirdPersonCamera.activeSelf && shoulderPivot != null)
+        // Suavizado de la cámara principal (Main Camera)
+        if (cameraHolder != null)
         {
-            // Pitch directo en el pivot (sin Lerp para evitar “rebotes”)
-            shoulderPivot.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+            Transform activeCam = thirdPersonCamera.activeSelf ? thirdPersonCamera.transform : firstPersonCamera.transform;
+
+            cameraHolder.position = Vector3.SmoothDamp(
+                cameraHolder.position,
+                activeCam.position,
+                ref currentVelocity,
+                positionSmoothTime
+            );
+
+            cameraHolder.rotation = Quaternion.Slerp(
+                cameraHolder.rotation,
+                activeCam.rotation,
+                Time.deltaTime * rotationLerp
+            );
         }
-        else if (firstPersonCamera.activeSelf && cam != null)
-        {
-            // Pitch directo en la cámara FP
-            cam.localRotation = Quaternion.Euler(pitch, 0f, 0f);
-        }
-    }
-
-    void HandleCameraFollow()
-    {
-        if (cam == null || cameraHolder == null) return;
-
-        // Posición con SmoothDamp (suave, sin vibración)
-        cam.position = Vector3.SmoothDamp(cam.position, cameraHolder.position, ref posVelocity, positionSmoothTime);
-
-        // Rotación con Slerp (fluida, sin “pelea” con la rotación de yaw/pitch)
-        cam.rotation = Quaternion.Slerp(cam.rotation, cameraHolder.rotation, rotationLerp * Time.deltaTime);
     }
 }
